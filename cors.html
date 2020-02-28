@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="utf-8" />
+		<title>CORS Test</title>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <script>
+      function cors(){
+        host = $('#host_textbox').val();
+        endpoint = $('#endpoint_textbox').val();
+        username = $('#username_textbox').val();
+        password = $('#password_textbox').val();
+        $('#output').html('Fetching data...');
+        $.ajax({
+          type:"GET",
+          url: host + endpoint,
+          xhrFields: {
+            withCredentials: true
+          },
+          beforeSend: function(xhr){
+            xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ':' + password));
+          },
+          success: function(data){
+            console.log("data:", data);
+            $("#output").html(syntaxHighlight(data));
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown){
+            $('#output').html("Status: " + textStatus); alert("Error: " + errorThrown);
+          }
+        });
+      }
+
+      function syntaxHighlight(json) {
+          if (typeof json != 'string') {
+               json = JSON.stringify(json, undefined, 2);
+          }
+          json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+              var cls = 'number';
+              if (/^"/.test(match)) {
+                  if (/:$/.test(match)) {
+                      cls = 'key';
+                  } else {
+                      cls = 'string';
+                  }
+              } else if (/true|false/.test(match)) {
+                  cls = 'boolean';
+              } else if (/null/.test(match)) {
+                  cls = 'null';
+              }
+              return '<span class="' + cls + '">' + match + '</span>';
+          });
+      }
+
+    </script>
+    <style>
+      body { background-color: #222; color: #FFF; font-family: Arial; }
+      pre { outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+      .string { color: green; }
+      .number { color: darkorange; }
+      .boolean { color: blue; }
+      .null { color: magenta; }
+      .key { color: red; }
+    </style>
+	</head>
+	<body>
+    <h2>CORS Testing Tool</h2>
+    <div style="width:50%">
+      <div style="width:50%">
+        <div style="display:block; float: left"><label for="username_textbox">Username<br>
+            <input id="username_textbox" type="text" value="" style="width:100%;"></label></div>
+        <div style="display:block; float: right"><label for="password_textbox">Password<br>
+            <input id="password_textbox" type="password" value="" style="width:100%;"></label></div>
+      </div><br><br><br>
+      <div style="display: block; width: 100%;">
+      <label for="host_textbox">Host
+        <input id="host_textbox" type="text" value="//wfic-cevac1:5000" style="width:100%"></label><br><br>
+      <label for="endpoint_textbox">Endpoint
+        <input id="endpoint_textbox" type="text" value="/pipes/WATT/SPOWER/LATEST/data" style="width:100%"></label><br><br>
+      <button onclick="cors()">Test CORS</button>
+      </div>
+      <pre style="width:100%; word-wrap: break-word; white-space: pre-wrap;" id="output"></pre>
+    </div>
+	</body>
+</html>
