@@ -24,15 +24,26 @@
             xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ':' + password));
           },
           success: function(data){
-            console.log("data:", data);
-            $("#output").html(syntaxHighlight(data));
+
+						data1 = newdata(data)
+						data = JSON.stringify(data);
+						$("#output").html("<h2>"+ data1 + data +"</h2>");
           },
           error: function(XMLHttpRequest, textStatus, errorThrown){
             $('#output').html("Status: " + textStatus); alert("Error: " + errorThrown);
           }
         });
       }
-
+			function newdata(data){
+				//Object.keys(data).length
+				var key, count = 0;
+				for(key in data.Value) {
+					if(data.Value.hasOwnProperty(key)) {
+						count++;
+					}
+				}
+				return count
+			}
       function syntaxHighlight(json) {
           if (typeof json != 'string') {
                json = JSON.stringify(json, undefined, 2);
@@ -71,13 +82,13 @@
     <div style="width:50%">
       <div style="width:50%">
         <div style="display:block; float: left"><label for="username_textbox">Username<br>
-            <input id="username_textbox" type="text" value="" style="width:100%;"></label></div>
+            <input id="username_textbox" type="text" value="cevac" style="width:100%;"></label></div>
         <div style="display:block; float: right"><label for="password_textbox">Password<br>
-            <input id="password_textbox" type="password" value="" style="width:100%;"></label></div>
+            <input id="password_textbox" type="password" value="123gurgle" style="width:100%;"></label></div>
       </div><br><br><br>
       <div style="display: block; width: 100%;">
       <label for="host_textbox">Host
-        <input id="host_textbox" type="text" value="//wfic-cevac1:5000" style="width:100%"></label><br><br>
+        <input id="host_textbox" type="text" value="http://wfic-cevac1:5000" style="width:100%"></label><br><br>
       <label for="endpoint_textbox">Endpoint
         <input id="endpoint_textbox" type="text" value="/pipes/WATT/SPOWER/LATEST/data" style="width:100%"></label><br><br>
       <button onclick="cors()">Test CORS</button>
