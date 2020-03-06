@@ -1,0 +1,30 @@
+body {
+
+  background-image: linear-gradient(to right top, #8a8fac, #767eba, #636dc6, #5159d0, #4343d7, #4745db, #4a47e0, #4e49e4, #6164e7, #767de7, #8d96e5, #a5ade1);
+  /* Background image is centered vertically and horizontally at all times */
+  background-position: center center;
+
+  /* Background image doesn't tile */
+  background-repeat: no-repeat;
+
+  /* Background image is fixed in the viewport so that it doesn't move when
+     the content's height is greater than the image's height */
+  background-attachment: fixed;
+
+  /* This is what makes the background image rescale based
+     on the container's size */
+  background-size: cover;
+
+}
+
+
+
+/* background-image: linear-gradient(to right top, #8a8fac, #767eba, #636dc6, #5159d0, #4343d7, #4745db, #4a47e0, #4e49e4, #6164e7, #767de7, #8d96e5, #a5ade1);
+background-image: linear-gradient(to right top, #541ad6, #192ab4, #002a8e, #002466, #001b3d, #001f3e, #00233d, #01263d, #003d6a, #00549a, #006acc, #0080ff);
+background-image: linear-gradient(to right bottom, #ff4400, #ff5968, #ff83ae, #ffaee1, #fad5fc, #e8cff3, #d7c8e9, #c8c1de, #a294c4, #7f69a9, #5d3e8d, #3c1171);
+
+
+
+primary color:
+secondary color:
+tertiary color: */

@@ -13,12 +13,49 @@
   </head>
 
 
-  <body background-image: linear-gradient(to right top, #541ad6, #192ab4, #002a8e, #002466, #001b3d, #001f3e, #00233d, #01263d, #003d6a, #00549a, #006acc, #0080ff);>
+  <body>
+    <nav class="hoverable z-depth-3 stroke">
+      <div class="nav-fixed" >
+        <a href="dash.html" class="brand-logo"  ><i class="material-icons" style="margin-top:auto">view_quilt</i>Dashboard</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li class="active"><a href="index.html"  >Home</a></li>
+          <li><a href="about.html"  >About</a></li>
+          <li><a href="research.html"  >Research</a></li>
+          <li><a href="publication.html"  >Publication</a></li>
+          <li><a href="team.html"  >Team</a></li>
+          <li><a href="contact.html"  >Join the Lab</a></li>
+        </ul>
+      </div>
+    </nav>
 
+    <div class="row">
+    <div class="col s3">
+      <div class="container">
 
+      </div>
+    </div>
+    <div class="col s6">
+      <div class="container">
+        <input type="text" class="datepicker">
+        <input type="text" class="datepicker">
+      </div
+    </div>
+    <div class="col s3">
+      <div class="container">
+
+      </div
+    </div>
+
+    </div>
 
   </body>
 
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.datepicker');
+  var options = {}
+  var instances = M.Datepicker.init(elems, options);
+});
+</script>
 
 </html>
