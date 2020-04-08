@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Compiled and minified CSS -->
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  </head>
+
+
+  <body>
+    <nav class="hoverable z-depth-3 stroke">
+      <div class="nav-fixed" >
+        <a href="dash.html" class="brand-logo"  ><i class="material-icons" style="margin-top:auto">view_quilt</i>Dashboard</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li class="active"><a href="index.html"  >Home</a></li>
+          <li><a href="1.html"  >About</a></li>
+          <li><a href="2.html"  >Research</a></li>
+          <li><a href="3.html"  >Publication</a></li>
+          <li><a href="4.html"  >Team</a></li>
+          <li><a href="5.html"  >Join the Lab</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="row">
+    <div class="col s3">
+      <div class="container">
+        <ul>
+          <li>Watt</li>
+          <li>Cooper</li>
+      </div>
+    </div>
+    <div class="col s6">
+      <div class="container">
+        <div class="row">
+          <div class="col s6">
+            Start:<input type="text" class="datepicker">
+          </div>
+          <div class="col s6">
+            End:<input type="text" class="datepicker">
+          </div>
+        </div>
+        <div class="row">
+          <button type="button" onclick="get_table_json()"name="button"></button>
+        </div>
+        <canvas id="canvas_div" width="300" height="300"></canvas>
+
+
+      </div>
+    </div>
+    <div class="col s3" style="position: relative">
+      <div class="container">
+        <ul>
+          <li>Co2</li>
+          <li>WAP</li>
+      </div>
+    </div>
+
+    </div>
+
+  </body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.datepicker');
+  var options = {}
+  var instances = M.Datepicker.init(elems, options);
+});
+</script>
+
+<!-- <script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: 'Co2',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor:
+                'rgba(0, 0, 0, 0.2)',
+            borderColor:
+                'rgba(255, 255, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script> -->
+<script type="text/javascript">
+function get_table_json(){
+  [BuildingSName, Metric] = doc_BuildingSName_Metric();
+  //Age = document.getElementById('Age_text').value;
+  Age = 'LATEST';
+  $.ajax({
+    type: 'GET',
+    url: 'http://wfic-cevac1:5000/pipes/' + BuildingSName + '/' + Metric + '/' + Age + '/data',
+    success: function(data){
+      plot(data);
+    }
+  });
+}
+function plot(d){
+  document.getElementById('canvas_div').innerHTML = "<canvas id='canvas'></canvas>";
+  document.getElementById('canvas_div').style.display = 'block';
+  let jsonfile = JSON.parse(JSON.stringify(d));
+  console.log("jsonfile" +  JSON.stringify(jsonfile))
+  //var AliasName = jsonfile['keys']['AliasName'];
+  var AliasName = jsonfile.Alias
+  //var DataName = jsonfile['keys']['DataName'];
+  var DataName = jsonfile.ActualValue
+  var labels = jsonfile.data.map(function(e) {
+     return e[AliasName];
+  });
+  var data = jsonfile.data.map(function(e) {
+     return e[DataName];
+  });
+
+  // var BuildingSName = document.getElementById('buildings').value;
+  // var Metric = document.getElementById('metrics').value;
+  // var Age = document.getElementById('Age_text').value;
+  var BuildingSName ='WATT'
+  var Metric = 'CO2'
+  var Age = 'LATEST'
+  var TableName = 'CEVAC_' + BuildingSName + '_' + Metric + '_' + Age;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'black';
+  var config = {
+     type: 'bar',
+     data: {
+        labels: labels,
+        datasets: [{
+           label: TableName,
+           data: data,
+           backgroundColor: 'rgba(0, 119, 204, 0.3)'
+        }]
+     },
+    options: {
+      legend: {
+        labels: {
+          fontColor: "#FFFFFF"
+        }
+      },
+      scales: {
+        // fontColor: "#FFFFFF"
+        yAxes: [{
+          ticks: {
+            fontColor: "#FFFFFF"
+          }
+        }],
+        xAxes: [{
+          ticks: {
+            fontColor: "#FFFFFF"
+          }
+        }]
+      }
+    }
+  };
+
+  var chart = new Chart(ctx, config);
+}
+function doc_BuildingSName_Metric(){
+  //BuildingSName = document.getElementById('buildings').value;
+  //Metric = document.getElementById('metrics').value;
+  BuildingSName = 'WATT'
+  Metric = 'CO2'
+  return [BuildingSName, Metric];
+}
+
+
+</script>
+<script>
+// Example POST method implementation:
+async function postData(url = '', data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    mode: 'no-cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      username:"cevac",
+      password:"123gurgle"
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *client
+    //body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+  return await response.json(); // parses JSON response into native JavaScript objects
+}
+postData('http://wfic-cevac1:5000//pipes/WATT/SPOWER/LATEST/data', { answer: 42 })
+  .then((data) => {
+    console.log(data); // JSON data parsed by `response.json()` call
+  });
+</script>
+</html>
